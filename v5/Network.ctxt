@@ -1,0 +1,17 @@
+#BlueJ class context
+comment0.target=Network
+comment1.params=inName
+comment1.target=void\ start(java.lang.String)
+comment2.params=newView
+comment2.target=void\ viewAccepted(org.jgroups.View)
+comment3.params=msg
+comment3.target=void\ receive(org.jgroups.Message)
+comment4.params=inPlayer
+comment4.target=void\ requestGame(org.jgroups.Address)
+comment5.params=
+comment5.target=void\ acceptGame()
+comment6.params=
+comment6.target=void\ eventLoop()
+comment7.params=args
+comment7.target=void\ main(java.lang.String[])
+numComments=8

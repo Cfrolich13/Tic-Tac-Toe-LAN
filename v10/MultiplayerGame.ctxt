@@ -1,0 +1,12 @@
+#BlueJ class context
+comment0.target=MultiplayerGame
+comment0.text=\r\n\ The\ main\ class\ for\ Tic\ Tac\ Toe\ that\ asks\ for\ player's\ names\ and\ letters,\ then\ starts\ the\ game.\r\n\r\n\ @author\ Cooper\r\n\ @version\ 12/07/2023\r\n
+comment1.params=msg
+comment1.target=void\ receive(org.jgroups.Message)
+comment2.params=newView
+comment2.target=void\ viewAccepted(org.jgroups.View)
+comment3.params=oppName
+comment3.target=org.jgroups.Address\ getOpponent(java.lang.String)
+comment4.params=player1\ player2\ thisPlayer
+comment4.target=void\ main(Player,\ Player,\ Player)
+numComments=5
