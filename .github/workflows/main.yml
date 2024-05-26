@@ -1,0 +1,29 @@
+name: GraalVM Native Image builds
+on: workflow_dispatch
+jobs:
+  build:
+    name: Tic Tac Toe on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          java-version: '21'
+          distribution: 'graalvm'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          native-image-job-reports: 'true'
+
+      - name: Build Network.java
+        run: |
+          javac v18/Network.java
+          native-image Network
+      
+      - name: Upload binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: TicTacToe-${{ matrix.os }}
+          path: v18/network*
