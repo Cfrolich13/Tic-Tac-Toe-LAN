@@ -74,6 +74,7 @@ public class Network implements Receiver
             if (msg.getObject().equals("///.requestGame()"))
             {
                 playerSent.add(msg.getSrc());
+                System.out.println(playerSent);
                 System.out.println("request recieved");
                 /*String line = "///.acceptGame()" + userName;
                 Message name = new ObjectMessage(msg.getSrc(), line);
@@ -99,12 +100,19 @@ public class Network implements Receiver
         catch(Exception e) {
         }
     }
-
+    
+    private ArrayList<Address> getPlayerSent()
+    {
+        return playerSent;
+    }
+    
     private void acceptGame()
     {
         System.out.println("Hey");
         while(true)
         {
+            ArrayList<Address> playerSent = getPlayerSent();
+            System.out.println(playerSent);
             if (playerSent.size() > 0)
             {
                 System.out.println("Hi");

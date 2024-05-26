@@ -1,7 +1,7 @@
 #BlueJ class context
 comment0.target=Network
-comment1.params=
-comment1.target=void\ start()
+comment1.params=inName
+comment1.target=void\ start(java.lang.String)
 comment2.params=newView
 comment2.target=void\ viewAccepted(org.jgroups.View)
 comment3.params=msg

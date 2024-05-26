@@ -7,19 +7,21 @@ import org.jgroups.Address;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Network implements Receiver
 {
     JChannel channel;
-    String userName = "Cooper"; // = System.getProperty("user.name", "n/a");
+    String userName; // = System.getProperty("user.name", "n/a");
     ArrayList<Address> lobby = new ArrayList<Address>();
 
-    private void start() throws Exception
+    private void start(String inName) throws Exception
     {
         channel = new JChannel(); //Currently using UDP. Replace with TCP later.
         channel.setReceiver(this);
-        channel.setName(userName);
-        channel.connect("ChatCluster");
+        userName = inName;
+        channel.setName(inName);
+        channel.connect("TicTacToeLobby");
         eventLoop();
         channel.close();
     }
@@ -93,7 +95,6 @@ public class Network implements Receiver
                 {
                     break;
                 }
-                line = "[" + userName + "] " + line;
                 Message msg = new ObjectMessage(null, line);
                 channel.send(msg);
             }
@@ -105,6 +106,8 @@ public class Network implements Receiver
     public static void main(String[] args) throws Exception
     {
         //username = "Cooper";
-        new Network().start();
+        System.out.println("Please enter username.");
+        Scanner in = new Scanner(System.in);
+        new Network().start(in.nextLine());
     }
 }

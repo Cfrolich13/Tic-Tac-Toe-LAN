@@ -16,6 +16,7 @@ public class Network implements Receiver
     private ArrayList<Address> lobby;
     private Address requestedPlayer;
     private ArrayList<Address> playerSent;
+    private String gameCluster;
 
     private void start(String inName) throws Exception
     {
@@ -74,14 +75,16 @@ public class Network implements Receiver
             if (msg.getObject().equals("///.requestGame()"))
             {
                 playerSent.add(msg.getSrc());
-                System.out.println("request recieved");
-                /*String line = "///.acceptGame()" + userName;
-                Message name = new ObjectMessage(msg.getSrc(), line);
-                channel.send(name);*/
+                System.out.println(msg.getSrc() + " invited you to a game. Accept? (y/n)");
             }
-            else if (msg.getObject().toString().indexOf("///.acceptGame()") > -1)
+            else if (msg.getObject().toString().indexOf("///.acceptGame()") == 0)
             {
-                System.out.println();
+                gameCluster = msg.getObject().toString().substring(16);
+                System.out.println("Invite accepted. Connecting to " + gameCluster + "...");
+            }
+            else if (msg.getObject().equals("///.declineGame()"))
+            {
+                System.out.println(msg.getSrc() + " declined.");
             }
             //System.out.println(msg.getSrc() + ": " + msg.getObject());
         }
@@ -100,23 +103,63 @@ public class Network implements Receiver
         }
     }
 
+    /*private void acceptGame(Address sentAddress)
+    {
+    //BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+    System.out.println(sentAddress + " invited you to a game. Accept? (y/n)");
+    try
+    {
+    if (in.readLine().equals("y"))
+    {
+    String newCluster = channel.getAddress().toString();
+    System.out.println(newCluster);
+    //Message msg = new ObjectMessage(sentAddress, "///.acceptGame()");
+    //channel.send(msg);
+    }
+
+    else
+    {
+    System.out.println("No");
+    }
+    }
+    catch(Exception e) {
+    }
+    }*/
+
     private void acceptGame()
     {
-        System.out.println("Hey");
-        while(true)
+        Address opponent = playerSent.get(playerSent.size() - 1);
+        String newCluster = "TicTacToeMatch-";
+        newCluster += channel.getAddress().toString();
+        newCluster += "-";
+        newCluster += opponent;
+        newCluster += "-";
+        newCluster += (int) (Math.random() * 9999);
+        String line = "///.acceptGame()" + newCluster;
+        Message msg = new ObjectMessage(opponent, line);
+        try
         {
-            if (playerSent.size() > 0)
-            {
-                System.out.println("Hi");
-                break;
-            }
+            channel.send(msg);
+        }
+        catch(Exception e) {
+        }
+    }
+    
+    private void declineGame()
+    {
+        Address opponent = playerSent.remove(playerSent.size() - 1);
+        Message msg = new ObjectMessage(opponent, "///.declineGame()");
+        try
+        {
+            channel.send(msg);
+        }
+        catch(Exception e) {
         }
     }
 
     private void eventLoop()
     {
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        new Thread(() -> {acceptGame();}).start();
         while(true)
         {
             try
@@ -125,6 +168,14 @@ public class Network implements Receiver
                 if (line.toLowerCase().startsWith("exit"))
                 {
                     break;
+                }
+                else if (line.equals("y"))
+                {
+                    acceptGame();
+                }
+                else if (line.equals("n"))
+                {
+                    declineGame();
                 }
                 else if (Integer.parseInt(line) <= lobby.size() && Integer.parseInt(line) > 0)
                 {

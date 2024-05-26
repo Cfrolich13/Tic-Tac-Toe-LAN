@@ -10,8 +10,11 @@ comment4.params=inPlayer
 comment4.target=void\ requestGame(org.jgroups.Address)
 comment5.params=
 comment5.target=void\ acceptGame()
+comment5.text=private\ void\ acceptGame(Address\ sentAddress)\r\n\ \ \ \ {\r\n\ \ \ \ //BufferedReader\ in\ \=\ new\ BufferedReader(new\ InputStreamReader(System.in));\r\n\ \ \ \ System.out.println(sentAddress\ +\ "\ invited\ you\ to\ a\ game.\ Accept?\ (y/n)");\r\n\ \ \ \ try\r\n\ \ \ \ {\r\n\ \ \ \ if\ (in.readLine().equals("y"))\r\n\ \ \ \ {\r\n\ \ \ \ String\ newCluster\ \=\ channel.getAddress().toString();\r\n\ \ \ \ System.out.println(newCluster);\r\n\ \ \ \ //Message\ msg\ \=\ new\ ObjectMessage(sentAddress,\ "///.acceptGame()");\r\n\ \ \ \ //channel.send(msg);\r\n\ \ \ \ }\r\n\r\n\ \ \ \ else\r\n\ \ \ \ {\r\n\ \ \ \ System.out.println("No");\r\n\ \ \ \ }\r\n\ \ \ \ }\r\n\ \ \ \ catch(Exception\ e)\ {\r\n\ \ \ \ }\r\n}
 comment6.params=
-comment6.target=void\ eventLoop()
-comment7.params=args
-comment7.target=void\ main(java.lang.String[])
-numComments=8
+comment6.target=void\ declineGame()
+comment7.params=
+comment7.target=void\ eventLoop()
+comment8.params=args
+comment8.target=void\ main(java.lang.String[])
+numComments=9
