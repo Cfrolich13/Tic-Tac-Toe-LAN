@@ -1,0 +1,19 @@
+#BlueJ class context
+comment0.target=Board
+comment0.text=\r\n\ Stores\ and\ updates\ the\ game\ board\r\n\r\n\ @author\ Cooper\ Frolich\r\n\ @version\ 12/01/2023\r\n
+comment1.params=
+comment1.target=Board()
+comment1.text=\r\n\ Constructor\ for\ objects\ of\ class\ Board.\ Initializes\ an\ array\ of\ 9\ squares.\r\n
+comment2.params=squareNum\ inPlayer
+comment2.target=void\ setSquare(int,\ Player)
+comment2.text=\r\n\ Sets\ the\ square\ number\ passed\ in\ to\ the\ player\ object\ passed\ in\r\n\ @param\ squareNum\ the\ number\ of\ the\ square\ to\ set\r\n\ @param\ inPlayer\ the\ player\ that's\ claiming\ the\ square\r\n
+comment3.params=squareNum
+comment3.target=Player\ getSquare(int)
+comment3.text=\r\n\ Returns\ the\ object\ of\ the\ player\ for\ a\ specific\ square\r\n\ @param\ squareNum\ the\ number\ of\ the\ square\ to\ return\r\n\ @return\ the\ player\ object\ occupying\ the\ square\r\n
+comment4.params=
+comment4.target=void\ clearBoard()
+comment4.text=\r\n\ Clears\ the\ board\ so\ a\ new\ game\ can\ be\ played\r\n
+comment5.params=
+comment5.target=void\ printBoard()
+comment5.text=\r\n\ Prints\ the\ board\ with\ the\ players'\ chosen\ letters\r\n
+numComments=6
