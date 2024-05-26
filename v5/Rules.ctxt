@@ -1,0 +1,16 @@
+#BlueJ class context
+comment0.target=Rules
+comment0.text=\r\n\ Returns\ information\ about\ the\ board\ to\ assist\ in\ the\ game's\ logic\r\n\r\n\ @author\ Cooper\ Frolich\r\n\ @version\ 12/05/2023\r\n
+comment1.params=inGameBoard
+comment1.target=Rules(Board)
+comment1.text=\r\n\ Constructor\ for\ objects\ of\ class\ Rules\r\n\ @param\ inGameBoard\ the\ Board\ object\ to\ use\ when\ checking\ rules\r\n
+comment2.params=squareNum
+comment2.target=java.lang.String\ isLegal(int)
+comment2.text=\r\n\ Returns\ whether\ a\ move\ is\ valid\ or\ what\ makes\ it\ invalid\r\n\ @param\ squareNum\ the\ square\ being\ checked\r\n\ @return\ if\ it's\ valid\ or\ what\ the\ problem\ is\r\n
+comment3.params=
+comment3.target=boolean\ isAvailable()
+comment3.text=\r\n\ Returns\ whether\ there\ are\ any\ available\ squares\ on\ the\ board\r\n\ @return\ if\ any\ squares\ are\ open\r\n
+comment4.params=
+comment4.target=Player\ getWinner()
+comment4.text=\r\n\ Returns\ the\ winner\ of\ game\r\n\ @return\ the\ object\ of\ the\ player\ with\ three\ squares\ in\ a\ row,\ column,\ or\ diagonal\r\n
+numComments=5
