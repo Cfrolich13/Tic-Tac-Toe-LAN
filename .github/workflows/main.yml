@@ -23,7 +23,7 @@ jobs:
       - name: Build Network.java
         run: |
           javac -cp +libs/jgroups-5.0.0.Final.jar -sourcepath . Network.java
-          native-image Network -cp jar:+libs/jgroups-5.0.0.Final.jar
+          native-image -cp ".:+libs/*" --report-unsupported-elements-at-runtime Network
       
       - name: Upload binary
         uses: actions/upload-artifact@v2
