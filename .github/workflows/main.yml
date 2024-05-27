@@ -23,7 +23,7 @@ jobs:
       - name: Build Network.java
         run: |
           javac -cp +libs/jgroups-5.0.0.Final.jar -sourcepath . Network.java
-          native-image Network --add-modules jdk.jgroups
+          native-image Network --allow-incomplete-classpath
       
       - name: Upload binary
         uses: actions/upload-artifact@v2
