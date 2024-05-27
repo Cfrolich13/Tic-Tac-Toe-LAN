@@ -7,6 +7,9 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, windows-latest, ubuntu-latest]
+    defaults:
+      run:
+        working-directory: ./v18
     steps:
       - uses: actions/checkout@v4
 
@@ -20,10 +23,11 @@ jobs:
       - name: Build Network.java
         run: |
           javac v18/Network.java
+          javac -cp +libs/jgroups-5.0.0.Final.jar Network.java
           native-image Network
       
       - name: Upload binary
         uses: actions/upload-artifact@v2
         with:
           name: TicTacToe-${{ matrix.os }}
-          path: v18/network*
+          path: network*
