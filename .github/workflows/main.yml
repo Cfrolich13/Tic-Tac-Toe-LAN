@@ -22,7 +22,7 @@ jobs:
 
       - name: Build Network.java
         run: |
-          javac -cp +libs/jgroups-5.0.0.Final.jar Network.java
+          javac -cp ../;+libs/jgroups-5.0.0.Final.jar Network.java
           native-image Network
       
       - name: Upload binary
