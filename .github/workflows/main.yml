@@ -24,7 +24,7 @@ jobs:
         if: ${{ matrix.os != 'windows-latest' }}
         run: |
           javac -cp +libs/jgroups-5.0.0.Final.jar -sourcepath . Network.java
-          native-image -cp ".:+libs/*" --report-unsupported-elements-at-runtime Network
+          native-image -cp ".:+libs/*" --report-unsupported-elements-at-runtime Network -march=compatibility
           echo 'Path ${{ github.workspace }}'
       
       - name: Build Network.java for Windows
