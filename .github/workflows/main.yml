@@ -25,15 +25,17 @@ jobs:
         run: |
           javac -cp +libs/jgroups-5.0.0.Final.jar -sourcepath . Network.java
           native-image -cp ".:+libs/*" --report-unsupported-elements-at-runtime Network
+          echo 'Path ${{ github.workspace }}'
       
       - name: Build Network.java for Windows
         if: ${{ matrix.os == 'windows-latest' }}
         run: |
           javac -cp +libs/jgroups-5.0.0.Final.jar -sourcepath . Network.java
           native-image -cp ".;+libs/*" --report-unsupported-elements-at-runtime Network
+          echo 'Path ${{ github.workspace }}'
       
       - name: Upload binary
         uses: actions/upload-artifact@v2
         with:
           name: TicTacToe-${{ matrix.os }}
-          path: /Tic-Tac-Toe-LAN/v18/network
+          path: ${{ github.workspace }}/Tic-Tac-Toe-LAN/v18/network
