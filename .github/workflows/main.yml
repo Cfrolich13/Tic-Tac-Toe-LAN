@@ -36,4 +36,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: TicTacToe-${{ matrix.os }}
-          path: ./network*
+          path: ./network
