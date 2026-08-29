@@ -299,7 +299,7 @@ public class MultiplayerGame implements Receiver {
                     } else {
                         System.out.println(otherPlayer.getName() + " left the game.");
                         playAgain = false;
-                        Thread.sleep(2000);
+                        // Thread.sleep(2000);
                     }
                 } else {
                     playAgain = false;
@@ -331,7 +331,7 @@ public class MultiplayerGame implements Receiver {
                 } else {
                     System.out.println(otherPlayer.getName() + " left the game.");
                     playAgain = false;
-                    Thread.sleep(2000);
+                    // Thread.sleep(2000);
                 }
             }
 

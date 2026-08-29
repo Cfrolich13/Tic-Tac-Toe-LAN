@@ -3,12 +3,20 @@ import org.jgroups.Message;
 import org.jgroups.ObjectMessage;
 import org.jgroups.Receiver;
 import org.jgroups.View;
+import org.jgroups.logging.CustomLogFactory;
+import org.jgroups.logging.JDKLogImpl;
+import org.jgroups.logging.Log;
+import org.jgroups.logging.LogFactory;
+import org.jgroups.protocols.pbcast.GMS;
 import org.jgroups.Address;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Network implements Receiver {
     public JChannel channel;
@@ -25,6 +33,13 @@ public class Network implements Receiver {
         long startTime = System.nanoTime(); // Benchmark time connecting to cluster. This depends on the computer and
                                             // the network. This is really slow at school.
         channel = new JChannel();
+
+        GMS gms = channel.getProtocolStack().findProtocol(GMS.class);
+        if (gms != null) {
+            gms.setMaxLeaveAttempts(1);
+            gms.setLeaveTimeout(500);
+        }
+
         channel.setReceiver(this);
         userName = inName;
         playerSent = new ArrayList<Address>();
@@ -85,11 +100,13 @@ public class Network implements Receiver {
         // System.out.println("Before connect");
         MultiplayerGame game = new MultiplayerGame();
         gameChannel = channel;
-        gameChannel.connect(gameCluster).receiver(game);
+        gameChannel.setReceiver(game);
+        gameChannel.connect(gameCluster);
         // System.out.println("After connect");
         game.main(player1, player2, thisPlayer/* , opponent */);
         gameChannel.disconnect();
-        channel.connect("TicTacToeLobby").receiver(this);
+        channel.setReceiver(this);
+        channel.connect("TicTacToeLobby");
         messageRefBoolean.set(false);
         viewAccepted(channel.getView());
     }
@@ -102,7 +119,16 @@ public class Network implements Receiver {
             } else if (msg.getObject().toString().indexOf("///.acceptGame()") == 0) {
                 gameCluster = msg.getObject().toString().substring(16);
                 System.out.println("Invite accepted. Connecting to " + gameCluster + "...");
-                connectToGame(gameCluster, msg.getSrc(), channel.getAddress(), false);
+                // connectToGame(gameCluster, msg.getSrc(), channel.getAddress(), false);
+
+                new Thread(() -> {
+                    try {
+                        connectToGame(gameCluster, msg.getSrc(), channel.getAddress(), false);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+
             } else if (msg.getObject().equals("///.declineGame()")) {
                 System.out.println(msg.getSrc() + " declined.");
             }
@@ -189,10 +215,47 @@ public class Network implements Receiver {
         }
     }
 
+    private static void iHateWarnings() {
+        // Suppress only WARNING level logs, while keeping INFO, SEVERE, and banners
+        for (Handler handler : Logger.getLogger("").getHandlers()) {
+            handler.setFilter(record -> {
+                if (record.getLoggerName() != null && record.getLoggerName().startsWith("org.jgroups")) {
+                    return record.getLevel() != Level.WARNING;
+                }
+                return true;
+            });
+        }
+
+
+        LogFactory.setCustomLogFactory(new CustomLogFactory() {
+        @Override
+        public Log getLog(Class<?> clazz) {
+            return new JDKLogImpl(clazz) {
+                @Override public boolean isWarnEnabled() { return false; }
+                @Override public void warn(String msg) {}
+                @Override public void warn(String msg, Object... args) {}
+                @Override public void warn(String msg, Throwable t) {}
+            };
+        }
+        @Override
+        public Log getLog(String category) {
+            return new JDKLogImpl(category) {
+                @Override public boolean isWarnEnabled() { return false; }
+                @Override public void warn(String msg) {}
+                @Override public void warn(String msg, Object... args) {}
+                @Override public void warn(String msg, Throwable t) {}
+            };
+        }
+    });
+
+    }
+
     public static void main(String[] args) throws Exception {
         System.setProperty("java.net.preferIPv4Stack", "true");
         System.setProperty("jgroups.diagnostics.enabled", "false");
         System.setProperty("jgroups.bind_addr", "SITE_LOCAL");
+
+        iHateWarnings();
 
         @SuppressWarnings("resource")
         Scanner in = new Scanner(System.in);
