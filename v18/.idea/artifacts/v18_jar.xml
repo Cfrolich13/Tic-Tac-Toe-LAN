@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="v18:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/v18_jar</output-path>
+    <root id="archive" name="v18.jar">
+      <element id="module-output" name="v18" />
+      <element id="library" level="project" name="Tic Tac Toe" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/+libs/jgroups-5.0.0.Final.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
