@@ -11,6 +11,7 @@ public class Game
     public static void main(String args[])
     {
         //Initialize variables
+        @SuppressWarnings("resource")
         Scanner in = new Scanner(System.in);
         Board gameBoard = new Board();
         Rules gameRules = new Rules(gameBoard);

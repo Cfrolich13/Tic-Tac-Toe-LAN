@@ -10,13 +10,14 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * The main class for Tic Tac Toe that asks for player's names and letters, then starts the game.
+ * The main class for Tic Tac Toe that asks for player's names and letters, then
+ * starts the game.
  *
  * @author Cooper
  * @version 12/07/2023
  */
-public class MultiplayerGame implements Receiver
-{
+@SuppressWarnings("unused")
+public class MultiplayerGame implements Receiver {
     private View view;
     private Address opponent = null;
     private AtomicReference<ArrayList> messageRefStrings;
@@ -26,34 +27,29 @@ public class MultiplayerGame implements Receiver
     private boolean readyPlayAgain = false;
     private boolean otherPlayAgain = false;
 
-    public void receive(Message msg)
-    {
-        try
-        {
-            /*System.out.println("Received.");
-            System.out.println(msg.getSrc() + ": " + msg.getObject());*/
+    public void receive(Message msg) {
+        try {
+            /*
+             * System.out.println("Received.");
+             * System.out.println(msg.getSrc() + ": " + msg.getObject());
+             */
             Object contents = msg.getObject();
-            if (contents instanceof ArrayList)
-            {
+            if (contents instanceof ArrayList) {
                 ArrayList<String> letters = (ArrayList) contents;
                 messageRefStrings.set(letters);
                 CountDownLatch latch = latchRef.get(); // Get the latch from the reference
                 if (latch != null) {
                     latch.countDown(); // Signal that the message has been received
                 }
-            }
-            else if (contents instanceof Integer)
-            {
+            } else if (contents instanceof Integer) {
                 Integer move = (Integer) contents;
-                //System.out.println("We like numbers 'round here: " + move);
+                // System.out.println("We like numbers 'round here: " + move);
                 messageRefInteger.set(move);
                 CountDownLatch latch = latchRef.get(); // Get the latch from the reference
                 if (latch != null) {
                     latch.countDown(); // Signal that the message has been received
                 }
-            }
-            else if (contents instanceof Boolean)
-            {
+            } else if (contents instanceof Boolean) {
                 Boolean playAgain = (Boolean) contents;
                 messageRefBoolean.set(playAgain);
                 CountDownLatch latch = latchRef.get(); // Get the latch from the reference
@@ -61,35 +57,31 @@ public class MultiplayerGame implements Receiver
                     latch.countDown(); // Signal that the message has been received
                 }
             }
-        }
-        catch(Exception e) {
+        } catch (Exception e) {
             System.out.println("Bad reception: " + e);
         }
     }
 
-    public void viewAccepted(View newView)
-    {
+    public void viewAccepted(View newView) {
         view = newView;
-        //System.out.println("ArrayList: " + newView);
+        // System.out.println("ArrayList: " + newView);
     }
 
-    public Address getOpponent(String oppName)
-    {
-        for (Address player : view)
-        {
-            //System.out.println(player);
-            if (player.toString().equals(oppName))
-            {
+    public Address getOpponent(String oppName) {
+        for (Address player : view) {
+            // System.out.println(player);
+            if (player.toString().equals(oppName)) {
                 return player;
             }
         }
         return null;
     }
 
-    public void main(Player player1, Player player2, Player thisPlayer/*, Address opponent*/) throws InterruptedException
-    {
-        //Initialize variables
-        //System.out.println("In game1");
+    public void main(Player player1, Player player2, Player thisPlayer/* , Address opponent */)
+            throws InterruptedException {
+        // Initialize variables
+        // System.out.println("In game1");
+        @SuppressWarnings("resource")
         Scanner in = new Scanner(System.in);
         Board gameBoard = new Board();
         Rules gameRules = new Rules(gameBoard);
@@ -97,49 +89,44 @@ public class MultiplayerGame implements Receiver
         Player otherPlayer;
         boolean playAgain = true;
 
-        //System.out.println("In game2");
-        //new Network().channel.setReceiver(this);
-        //System.out.println("In game3");
-        //System.out.println("Player 1: " + player1.getName());
-        //System.out.println("Player 2: " + player2.getName());
+        // System.out.println("In game2");
+        // new Network().channel.setReceiver(this);
+        // System.out.println("In game3");
+        // System.out.println("Player 1: " + player1.getName());
+        // System.out.println("Player 2: " + player2.getName());
         messageRefStrings = new AtomicReference<>(); // Reference to store the received message
         messageRefInteger = new AtomicReference<>();
         messageRefBoolean = new AtomicReference<>();
 
-        // Set up the receiver with a reference to the AtomicReference and a place for the latch
+        // Set up the receiver with a reference to the AtomicReference and a place for
+        // the latch
         latchRef = new AtomicReference<>();
 
         view = Network.gameChannel.getView();
 
         System.out.println("Waiting for opponent...");
-        if (player1 == thisPlayer)
-        {
-            //Set opponent variable
-            //Thread.sleep((int)(1000 + Network.ping * 2));
+        if (player1 == thisPlayer) {
+            // Set opponent variable
+            // Thread.sleep((int)(1000 + Network.ping * 2));
             otherPlayer = player2;
-            while (opponent == null)
-            {
+            while (opponent == null) {
                 opponent = getOpponent(otherPlayer.getName());
                 Thread.sleep(1000);
             }
             System.out.println("Opponent found: " + opponent);
 
-            //Set letters
+            // Set letters
             System.out.println(player1.getName() + ", would you like X or O?");
             player1.setLetter(in.nextLine());
-            if (player1.getLetter().toUpperCase().equals("X"))
-            {
+            if (player1.getLetter().toUpperCase().equals("X")) {
                 player1.setLetter("X");
                 player2.setLetter("O");
-            }
-            else if (player1.getLetter().toUpperCase().equals("O"))
-            {
+            } else if (player1.getLetter().toUpperCase().equals("O")) {
                 player1.setLetter("O");
                 player2.setLetter("X");
-            }
-            else
-            {
-                System.out.println("It's always someone. What letter would you like to give " + player2.getName() + "?");
+            } else {
+                System.out
+                        .println("It's always someone. What letter would you like to give " + player2.getName() + "?");
                 player2.setLetter(in.nextLine());
             }
 
@@ -147,19 +134,16 @@ public class MultiplayerGame implements Receiver
             letters.add(player1.getLetter());
             letters.add(player2.getLetter());
 
-            try
-            {
-                //Thread.sleep(1000);
+            try {
+                // Thread.sleep(1000);
                 Network.gameChannel.send(new ObjectMessage(opponent, letters));
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 System.out.println("I told you not to shoot the messenger! " + e);
             }
-            System.out.println(player1.getName() + ", you will be \"" + player1.getLetter() + ".\" " + player2.getName() + " will get \"" + player2.getLetter() + ".\"");
-        }
-        else
-        {
-            //Set opponent variable
+            System.out.println(player1.getName() + ", you will be \"" + player1.getLetter() + ".\" " + player2.getName()
+                    + " will get \"" + player2.getLetter() + ".\"");
+        } else {
+            // Set opponent variable
             otherPlayer = player1;
             opponent = getOpponent(otherPlayer.getName());
             System.out.println("Opponent found: " + opponent);
@@ -168,217 +152,183 @@ public class MultiplayerGame implements Receiver
 
             System.out.println(player1.getName() + " is choosing a letter.");
             latch.await(); // Wait for the message to be received
-            //in.nextLine();
-            //System.out.println("Message transfered.");
+            // in.nextLine();
+            // System.out.println("Message transfered.");
             ArrayList<String> letters = messageRefStrings.get();
             player1.setLetter(letters.get(0));
             player2.setLetter(letters.get(1));
 
-            System.out.println(player1.getName() + " chose \"" + player1.getLetter() + ".\" " + player2.getName() + ", you will be \"" + player2.getLetter() + ".\"");
+            System.out.println(player1.getName() + " chose \"" + player1.getLetter() + ".\" " + player2.getName()
+                    + ", you will be \"" + player2.getLetter() + ".\"");
         }
 
-        //Play game until players end it.
-        while (playAgain)
-        {
+        // Play game until players end it.
+        while (playAgain) {
             int round = 0;
             System.out.print("Let's start! ");
-            //Game loop
-            while (gameRules.isAvailable() && gameRules.getWinner() == null)
-            {
-                //Switch between players for taking turns
+            // Game loop
+            while (gameRules.isAvailable() && gameRules.getWinner() == null) {
+                // Switch between players for taking turns
                 round++;
-                if (round %2 == 1)
-                {
+                if (round % 2 == 1) {
                     currentPlayer = player1;
-                }
-                else
-                {
+                } else {
                     currentPlayer = player2;
                 }
-                if (currentPlayer == thisPlayer) //This player's turn
+                if (currentPlayer == thisPlayer) // This player's turn
                 {
-                    //Place player's letter on a square
-                    System.out.println("Your turn, " + currentPlayer.getName() + ". Where do you want to place your letter?");
+                    // Place player's letter on a square
+                    System.out.println(
+                            "Your turn, " + currentPlayer.getName() + ". Where do you want to place your letter?");
 
-                    /*String input = in.nextLine();
-                    while (input.equals("\n"))
-                    {
-                    System.out.println("Line");
-                    input = in.nextLine();
-                    }*/
-                    /*while (!in.hasNextInt())
-                    {
-                    in.nextLine();
-                    }*/
+                    /*
+                     * String input = in.nextLine();
+                     * while (input.equals("\n"))
+                     * {
+                     * System.out.println("Line");
+                     * input = in.nextLine();
+                     * }
+                     */
+                    /*
+                     * while (!in.hasNextInt())
+                     * {
+                     * in.nextLine();
+                     * }
+                     */
                     gameBoard.printBoard();
                     int requestedSquare = in.nextInt();// = in.nextInt();
-                    while (gameRules.isLegal(requestedSquare) != "valid")
-                    {
+                    while (gameRules.isLegal(requestedSquare) != "valid") {
                         System.out.println(gameRules.isLegal(requestedSquare) + ", " + currentPlayer.getName() + ".");
                         gameBoard.printBoard();
                         requestedSquare = in.nextInt();
                     }
                     gameBoard.setSquare(requestedSquare, currentPlayer);
-                    try
-                    {
-                        Network.gameChannel.send(new ObjectMessage(opponent, requestedSquare)); //Send move to other player
+                    try {
+                        Network.gameChannel.send(new ObjectMessage(opponent, requestedSquare)); // Send move to other
+                                                                                                // player
+                    } catch (Exception e) {
                     }
-                    catch (Exception e) {
-                    }
-                }
-                else //Waiting for other player's turn
+                } else // Waiting for other player's turn
                 {
                     CountDownLatch latch = new CountDownLatch(1);
                     latchRef.set(latch); // Set the latch reference
-                    System.out.println(otherPlayer.getName() + " is making a move. You're next, " + thisPlayer.getName() + ".");
+                    System.out.println(
+                            otherPlayer.getName() + " is making a move. You're next, " + thisPlayer.getName() + ".");
                     gameBoard.printBoard();
                     System.out.println("Waiting for opponent...");
-                    //Wait for move
+                    // Wait for move
                     latch.await(); // Wait for the message to be received
-                    //System.out.println("Message transfered.");
+                    // System.out.println("Message transfered.");
                     int move = messageRefInteger.get();
-                    //System.out.println(move);
+                    // System.out.println(move);
                     gameBoard.setSquare(move, otherPlayer);
-                    //in.nextInt();
+                    // in.nextInt();
                 }
-            } //Game ends when someone wins or board is full
+            } // Game ends when someone wins or board is full
 
             gameBoard.printBoard();
 
-            //Congratulates winner and updates score
-            if (gameRules.getWinner() == null)
-            {
+            // Congratulates winner and updates score
+            if (gameRules.getWinner() == null) {
                 System.out.println("Game over! It's a tie!");
                 player1.incrementTies();
                 player2.incrementTies();
-            }
-            else
-            {
+            } else {
 
-                if (gameRules.getWinner() == thisPlayer)
-                {
-                    System.out.println("Congratulations, " + gameRules.getWinner().getName() + "! You won!");                    
-                }
-                else
-                {
+                if (gameRules.getWinner() == thisPlayer) {
+                    System.out.println("Congratulations, " + gameRules.getWinner().getName() + "! You won!");
+                } else {
                     System.out.println("Game over! " + gameRules.getWinner().getName() + " won.");
                 }
-                if (gameRules.getWinner() == player1)
-                {
+                if (gameRules.getWinner() == player1) {
                     player1.incrementWins();
                     player2.incrementLosses();
-                }
-                else
-                {
+                } else {
                     player1.incrementLosses();
                     player2.incrementWins();
                 }
             }
 
-            //Print score
+            // Print score
             System.out.println("Score:");
-            System.out.printf("%8s","");
-            System.out.printf("%8s",player1.getName());
-            System.out.printf("%8s",player2.getName());
+            System.out.printf("%8s", "");
+            System.out.printf("%8s", player1.getName());
+            System.out.printf("%8s", player2.getName());
             System.out.println();
 
-            System.out.printf("%8s","Wins");
-            System.out.printf("%8d",player1.getWins());
-            System.out.printf("%8d",player2.getWins());
+            System.out.printf("%8s", "Wins");
+            System.out.printf("%8d", player1.getWins());
+            System.out.printf("%8d", player2.getWins());
             System.out.println();
 
-            System.out.printf("%8s","Losses");
-            System.out.printf("%8d",player1.getLosses());
-            System.out.printf("%8d",player2.getLosses());
+            System.out.printf("%8s", "Losses");
+            System.out.printf("%8d", player1.getLosses());
+            System.out.printf("%8d", player2.getLosses());
             System.out.println();
 
-            System.out.printf("%8s","Ties");
-            System.out.printf("%8d",player1.getTies());
-            System.out.printf("%8d",player2.getTies());
+            System.out.printf("%8s", "Ties");
+            System.out.printf("%8d", player1.getTies());
+            System.out.printf("%8d", player2.getTies());
             System.out.println();
 
             in.nextLine();
 
-            //Ask if they want to play again
-            if ((thisPlayer != gameRules.getWinner() && gameRules.getWinner() != null) || (gameRules.getWinner() == null && thisPlayer == player1))
-            {
+            // Ask if they want to play again
+            if ((thisPlayer != gameRules.getWinner() && gameRules.getWinner() != null)
+                    || (gameRules.getWinner() == null && thisPlayer == player1)) {
                 System.out.println("Do you want to play again? (y/n)");
-                if (in.nextLine().equals("y"))
-                {
+                if (in.nextLine().equals("y")) {
                     readyPlayAgain = true;
-                }
-                else
-                {
+                } else {
                     readyPlayAgain = false;
                 }
-                try
-                {
+                try {
                     Network.gameChannel.send(new ObjectMessage(opponent, readyPlayAgain));
+                } catch (Exception e) {
                 }
-                catch (Exception e){
-                }
-                if (readyPlayAgain)
-                {
+                if (readyPlayAgain) {
                     CountDownLatch latch = new CountDownLatch(1);
                     latchRef.set(latch); // Set the latch reference
                     System.out.println(otherPlayer.getName() + " is deciding whether to play again.");
                     System.out.println("Waiting for opponent...");
                     latch.await();
                     otherPlayAgain = messageRefBoolean.get();
-                    if (otherPlayAgain)
-                    {
+                    if (otherPlayAgain) {
                         System.out.println(otherPlayer.getName() + " would like to play again.");
                         playAgain = true;
-                    }
-                    else
-                    {
+                    } else {
                         System.out.println(otherPlayer.getName() + " left the game.");
                         playAgain = false;
                         Thread.sleep(2000);
                     }
-                }
-                else
-                {
+                } else {
                     playAgain = false;
                 }
-            }
-            else
-            {
+            } else {
                 CountDownLatch latch = new CountDownLatch(1);
                 latchRef.set(latch); // Set the latch reference
                 System.out.println(otherPlayer.getName() + " is deciding whether to play again.");
                 System.out.println("Waiting for opponent...");
                 latch.await();
                 otherPlayAgain = messageRefBoolean.get();
-                if (otherPlayAgain)
-                {
+                if (otherPlayAgain) {
                     System.out.println(otherPlayer.getName() + " would like to play again.");
                     System.out.println("Do you want to play again? (y/n)");
-                    if (in.nextLine().equals("y"))
-                    {
+                    if (in.nextLine().equals("y")) {
                         readyPlayAgain = true;
-                    }
-                    else
-                    {
+                    } else {
                         readyPlayAgain = false;
                     }
-                    try
-                    {
+                    try {
                         Network.gameChannel.send(new ObjectMessage(opponent, readyPlayAgain));
+                    } catch (Exception e) {
                     }
-                    catch (Exception e){
-                    }
-                    if (readyPlayAgain)
-                    {
+                    if (readyPlayAgain) {
                         playAgain = true;
-                    }
-                    else
-                    {
+                    } else {
                         playAgain = false;
                     }
-                }
-                else
-                {
+                } else {
                     System.out.println(otherPlayer.getName() + " left the game.");
                     playAgain = false;
                     Thread.sleep(2000);
@@ -388,7 +338,7 @@ public class MultiplayerGame implements Receiver
             gameBoard.clearBoard();
         }
 
-        //End program
+        // End program
         System.out.println("Returning to lobby...");
     }
 }
